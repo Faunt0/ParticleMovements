@@ -1,6 +1,8 @@
 import math
 import matplotlib.pyplot as plt
+#from matplotlib.animation import FuncAnimation, PillowWriter
 import numpy as np
+import matplotlib.animation as animation
 from decimal import *
 
 #constants
@@ -16,7 +18,6 @@ def vectorsAdd(*vectors):
     for i in range(1, len(list(vectors))):
         for j in range(0, len(newVector)):
             newVector[j] = newVector[j] + list(vectors)[i][j]
-   
     return newVector
 
 def vectorMultiply(vector, l):
@@ -85,8 +86,9 @@ class Particle:
 
 
 
-p1 = Particle([-1,0], [0.80,-2.0], 80000)
-p2 = Particle([10,10], [0,0], 9000000)
+p1 = Particle([-5,-9], [1.70,-0.7], 80000)
+#p1 = Particle([-1,0], [-1.15,2.0], 80000)
+p2 = Particle([10,10], [0,0], 10050000)
 p3 = Particle([20,15], [0,0], 10000000)
 
 # The Inter Particle Force Calculator, at your service!
@@ -104,8 +106,9 @@ def IPFC (p1, p2, t):
 
 # The rendering of the points and trails. before this all the forces being applied should be calculated
 
-plt.plot([p1.sv[0]], [p1.sv[1]], 'bo' )
+#plt.plot([p1.sv[0]], [p1.sv[1]], 'bo' )
 
+pitch = 0.0001
 pitch = 0.0001
 nstep = round(1/pitch)
 for t in range(0, 1):
@@ -130,10 +133,30 @@ for t in range(0, 1):
         
         stepPitch += pitch
 
+fig, ax = plt.subplots()
+x, y = [], []
+line, = ax.plot(p1.xcoords, p1.ycoords, 'm.')
 
+#animation proces
+def init():
+    ax.set_xlim(-100, 110)
+    ax.set_ylim(-70, 125)
+    return line,
 
-plt.plot(p1.xcoords, p1.ycoords, label="particle movement")
-plt.plot([p2.sv[0]], [p2.sv[1]], 'ro' )
-plt.legend()
-plt.title("particle movements")
+def update(frame):
+    x.append(p1.xcoords[frame])
+    y.append(p1.ycoords[frame])
+    line.set_data(x, y)
+    return line,
+
+#ani = animation.FuncAnimation(fig, update, len(p1.xcoords), interval=15, blit=True, save_count=50)
+def animate():
+    ani = animation.FuncAnimation(fig, update, len(p1.xcoords), init_func=init, interval=20, blit=True, save_count=50)
+    ani.save('animgif4.gif')
+
+animate()
+
+#plt.plot(p1.xcoords, p1.ycoords, label="particle movement")
+#plt.plot([p2.sv[0]], [p2.sv[1]], 'ro' )
+#plt.legend()
 plt.show()
