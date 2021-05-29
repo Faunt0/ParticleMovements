@@ -84,64 +84,71 @@ class Particle:
         
         return math.sqrt(veclen)
 
-
-
-p1 = Particle([-5,-9], [1.70,-0.7], 80000)
-#p1 = Particle([-1,0], [-1.15,2.0], 80000)
-p2 = Particle([10,10], [0,0], 10050000)
-p3 = Particle([20,15], [0,0], 10000000)
-
 # The Inter Particle Force Calculator, at your service!
-def IPFC (p1, p2, t):
+def IPFC (p1, mp2, t):
     r = 0
     for i in range(0, len(p1.position(t))):
-        r += (p1.position(t)[i] - p2.position(t)[i])**2
+        r += (p1.position(t)[i] - mp2.position(t)[i])**2
    
 
-    f = G * (p1.mass * p2.mass) / r
-    fx = math.cos(math.radians(vectorsCorner(p1, p2, t))) * f
-    fy = math.sin(math.radians(vectorsCorner(p1, p2, t))) * f
+    f = G * (p1.mass * mp2.mass) / r
+    fx = math.cos(math.radians(vectorsCorner(p1, mp2, t))) * f
+    fy = math.sin(math.radians(vectorsCorner(p1, mp2, t))) * f
     return [f, fx, fy]
+
+
+# Moving Particles
+p1 = Particle([-5,-9], [1.70,-0.7], 80000)
+#p1 = Particle([-1,0], [-1.15,2.0], 80000)
+orbitalParticles = [p1]
+
+# Mass particles
+p2 = Particle([10,10], [0,0], 10050000)
+p3 = Particle([100,100], [0,0], 1000000)
+#p4 = Particle([50,-90], [0,0], 20000000)
+
+massParticles = [
+        Particle([10,10], [0,0], 10050000), 
+        Particle([100,100], [0,0], 900000),
+        #p4,
+    ]
+#massParticles = [p2]
+
 
 
 # The rendering of the points and trails. before this all the forces being applied should be calculated
 
-#plt.plot([p1.sv[0]], [p1.sv[1]], 'bo' )
 
-pitch = 0.0001
 pitch = 0.0001
 nstep = round(1/pitch)
 for t in range(0, 1):
     stepPitch = t
     for step in range(0, nstep):
-                
-        force = IPFC(p1, p2, stepPitch)
-        newPos = vectorsAdd(p1.sv, p1.mv, [force[1], force[2]])
+        force = [0,0]
+        for mp in massParticles:
+            force = vectorsAdd(force, [IPFC(p1, mp, stepPitch)[1], IPFC(p1, mp, stepPitch)[2]])
+        #newPos = vectorsAdd(p1.sv, p1.mv, [force[1], force[2]])
+        newPos = vectorsAdd(p1.sv, p1.mv, [force[0], force[1]])
         p1.sv = newPos
-        p1.mv = vectorsAdd(p1.mv, [force[1], force[2]])
+        #p1.mv = vectorsAdd(p1.mv, [force[1], force[2]])
+        p1.mv = vectorsAdd(p1.mv, [force[0], force[1]])
         
         p1.xcoords.append(float(newPos[0]))
         p1.ycoords.append(float(newPos[1]))
 
-#        print(f'step = {step}\tnewPos1: {newPos}\tforce = {force[0]}\tfx = {force[1]}\tfy = {force[2]}')
-        
-#        if pitch/force[0] < 1:
-#            forcedpitch = pitch/force[0]
-#            stepPitch += forcedpitch
-#        else:
-#            stepPitch += pitch
-        
         stepPitch += pitch
+#        print(f'step = {step}\tnewPos1: {newPos}\tforce = {force[0]}\tfx = {force[1]}\tfy = {force[2]}')
 
 fig, ax = plt.subplots()
 x, y = [], []
 line, = ax.plot(p1.xcoords, p1.ycoords, 'm.')
+massPoints = [ax.plot(mp.sv[0], mp.sv[1], 'rx') for mp in massParticles]
 
 #animation proces
 def init():
     ax.set_xlim(-100, 110)
     ax.set_ylim(-70, 125)
-    return line,
+    return line, massPoints,
 
 def update(frame):
     x.append(p1.xcoords[frame])
@@ -149,12 +156,12 @@ def update(frame):
     line.set_data(x, y)
     return line,
 
-#ani = animation.FuncAnimation(fig, update, len(p1.xcoords), interval=15, blit=True, save_count=50)
-def animate():
+def animate(save=False):
     ani = animation.FuncAnimation(fig, update, len(p1.xcoords), init_func=init, interval=20, blit=True, save_count=50)
-    ani.save('/gifs/animgif4.gif')
+    if save == True:
+        ani.save('animgif5.gif')
 
-animate()
+#animate()
 
 #plt.plot(p1.xcoords, p1.ycoords, label="particle movement")
 #plt.plot([p2.sv[0]], [p2.sv[1]], 'ro' )
