@@ -47,10 +47,10 @@ def vectorsCorner(v1, v2, t):
         corner = 90
     elif dy == 0 and dx < 0:
         #when its directly right to the mass particle
-        corner = 0
+        corner = 180
     elif dy == 0 and dx > 0:
         #when its directly to the left of the mass particle
-        corner = 180
+        corner = 0
 
     elif dx < 0 and dy < 0:
         #when the particle is in Q1 of the mass particle, top right
@@ -86,7 +86,7 @@ class Particle:
 
 
 
-p1 = Particle([-1,0], [0.9,-2.0], 80000)
+p1 = Particle([-1,0], [0.80,-2.0], 80000)
 p2 = Particle([10,10], [0,0], 9000000)
 p3 = Particle([-2,5], [0,0], 10000000)
 #print(p1.position(2))
@@ -106,6 +106,8 @@ def IPFC (p1, p2, t):
     fy = math.sin(math.radians(vectorsCorner(p1, p2, t))) * f
     return [f, fx, fy]
 
+
+# The rendering of the points and trails. before this all the forces being applied should be calculated
 xcoords = []
 ycoords = []
 
@@ -117,7 +119,7 @@ for t in range(0, 1):
     #newPos = p1.position(t)
     stepPitch = t
     for step in range(0, nstep):
-        
+                
         force = IPFC(p1, p2, stepPitch)
         #newPos = vectorsAdd(p1.position(stepPitch), [force[1], force[2]])
         newPos = vectorsAdd(p1.sv, p1.mv, [force[1], force[2]])
@@ -128,6 +130,12 @@ for t in range(0, 1):
         ycoords.append(float(newPos[1]))
 
         print(f'step = {step}\tnewPos1: {newPos}\tforce = {force[0]}\tfx = {force[1]}\tfy = {force[2]}')
+        
+#        if pitch/force[0] < 1:
+#            forcedpitch = pitch/force[0]
+#            stepPitch += forcedpitch
+#        else:
+#            stepPitch += pitch
         stepPitch += pitch
 
 
