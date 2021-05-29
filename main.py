@@ -152,7 +152,7 @@ def update(frame):
 #ani = animation.FuncAnimation(fig, update, len(p1.xcoords), interval=15, blit=True, save_count=50)
 def animate():
     ani = animation.FuncAnimation(fig, update, len(p1.xcoords), init_func=init, interval=20, blit=True, save_count=50)
-    ani.save('animgif4.gif')
+    ani.save('/gifs/animgif4.gif')
 
 animate()
 
