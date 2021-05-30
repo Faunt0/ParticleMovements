@@ -213,7 +213,7 @@ def update(frame, particles, lines):
         line.set_data(p.xcoords[0:frame], p.ycoords[0:frame])
     return lines
 
-ani = animation.FuncAnimation(fig, update, round(grandPitch/pitch), fargs=(orbitalParticles, lines), init_func=init, interval=20, save_count=50)
+#ani = animation.FuncAnimation(fig, update, round(grandPitch/pitch), fargs=(orbitalParticles, lines), init_func=init, interval=20, save_count=50)
 #ani.save('animgif8.gif')
 
 
