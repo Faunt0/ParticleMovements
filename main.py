@@ -174,7 +174,7 @@ if __name__ == "__main__":
         #Particle([-50,-100], [-2.1,-0.5], 840000, False),
         Particle([-100,-1], [-0.1,-0.1], 840000, False),
         Particle([-100,-1], [-2.1,-7.1], 840000, False),
-        Particle([10,90], [-2.5,-0.1], 850000, False),
+        Particle([10,90], [-2.5,-7.1], 850000, False),
     ]
     #orbitalParticles = []
 #    orbitalParticles = [Particle([random.randrange(-150, 150),random.randrange(-150, 150)], [random.randrange(-10, 10), random.randrange(-10, 10)], random.randint(800000, 1500000), False) for i in range(0, 50)]
